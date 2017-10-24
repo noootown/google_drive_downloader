@@ -20,10 +20,8 @@ if __name__ == '__main__':
   args = parse_args()
   gid = re.findall('^https?://drive.google.com/file/d/([^/]+)', args.url)[0]
 
-  def wget(url, filename = '', withCookie = False):
+  def wget(url, filename = ''):
     cmd = 'wget'
-    if withCookie:
-      cmd += ' -c'
     cmd += ' --tries=3 --no-check-certificate --load-cookie %s --save-cookie %s %s' % (args.cookie, args.cookie, url)
     if filename:
       cmd += ' -O %s' % filename
@@ -35,9 +33,8 @@ if __name__ == '__main__':
     with open(args.filename, 'r') as file:
       href = re.findall('href="(\/uc\?export=download[^"]+)', file.read())
 
-      if href:
-        url = 'https://docs.google.com%s' % href[0].replace('&amp;', '&')
-        wget(url, args.filename, withCookie = True)
+    if href:
+      wget('https://docs.google.com%s' % href[0].replace('&amp;', '&'), args.filename)
   except:
     pass
 
